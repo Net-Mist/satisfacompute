@@ -1,0 +1,72 @@
+buildings:
+  Foreuse MK2:
+    energy_cost: 12
+  Pompe à eau:
+    energy_cost: 20
+  Générateur à charbon:
+    energy_cost: -75
+    recipes:
+      brule charbon:
+        inputs:
+          charbon: 15
+  Fonderie avancée:
+    energy_cost: 16
+    recipes:
+      lingot d'acier:
+        inputs:
+          minerai de fer: 45
+          charbon: 45
+        outputs:
+          lingot d'acier: 45
+  Fonderie:
+    energy_cost: 4
+    recipes:
+      lingot de cuivre:
+        inputs:
+          minerai de cuivre: 30
+        outputs:
+          lingot de cuivre: 30
+  Constructeur:
+    energy_cost: 4
+    recipes:
+      poutre en acier:
+        inputs:
+          lingot d'acier: 60
+        outputs:
+          poutre en acier: 15
+      tuyau en acier:
+        inputs:
+          lingot d'acier: 30
+        outputs:
+          tuyau en acier: 20
+      beton:
+        inputs:
+          calcaire: 45
+        outputs:
+          beton: 15
+      fil electrique:
+        inputs:
+          lingot de cuivre: 15
+        outputs:
+          fil electrique: 30
+  Assembleuse:
+    energy_cost: 15
+    recipes:
+      poutre en beton armé:
+        inputs:
+          poutre en acier: 24
+          beton: 30
+        outputs:
+          poutre en beton armé: 6
+      stator:
+        inputs:
+          tuyau en acier: 15
+          fil electrique: 40
+        outputs:
+          stator: 5
+      moteur:
+        inputs:
+          stator: 10
+          rotor: 10
+        outputs:
+          moteur: 5
