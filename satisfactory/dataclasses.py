@@ -7,6 +7,7 @@ class Material(str, Enum):
     CHARBON = "charbon"
     LINGOT_ACIER = "lingot d'acier"
     LINGOT_CUIVRE = "lingot de cuivre"
+    LINGOT_FER = "lingot de fer"
     POUTRE_ACIER = "poutre en acier"
     TUYAU_ACIER = "tuyau en acier"
     CALCAIRE = "calcaire"
@@ -17,10 +18,16 @@ class Material(str, Enum):
     MOTEUR = "moteur"
     ROTOR = "rotor"
     EAU = "eau"
+    PLAQUE = "plaque"
+    PLAQUE_DE_FER_RENFORCEE = "plaque de fer renforcée"
+    CADRE_MODULAIRE = "cadre modulaire"
+    TIGE = "tige"
+    VIS = "vis"
 
 
-class Building(str, Enum):
+class BuildingType(str, Enum):
     FOREUSE_MK2 = "Foreuse MK2"
+    FOREUSE_MK1 = "Foreuse MK1"
     FONDERIE_AVANCEE = "Fonderie avancée"
     CONSTRUCTEUR = "Constructeur"
     ASSEMBLEUSE = "Assembleuse"
@@ -36,10 +43,17 @@ class Recipe(str, Enum):
     BETON = "beton"
     POUTRE_BETON_ARME = "poutre en beton armé"
     LINGOT_CUIVRE = "lingot de cuivre"
+    LINGOT_FER = "lingot de fer"
+    PLAQUE = "plaque"
     FIL_ELECTRIQUE = "fil electrique"
     STATOR = "stator"
     MOTEUR = "moteur"
     BRULE_CHARBON = "brule charbon"
+    PLAQUE_DE_FER_RENFORCEE = "plaque de fer renforcée"
+    CADRE_MODULAIRE = "cadre modulaire"
+    TIGE = "tige"
+    ROTOR = "rotor"
+    VIS = "vis"
 
 
 class MaterialType(int, Enum):

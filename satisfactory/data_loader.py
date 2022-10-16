@@ -3,9 +3,9 @@ from pathlib import Path
 import pydantic
 import yaml
 
-from src.dataclasses import Building, Material, Recipe
+from .dataclasses import BuildingType, Material, Recipe
 
-DATA_FILE = Path("data.yaml")
+DATA_FILE = Path(__file__).parent / "data.yaml"
 
 
 class RecipeModel(pydantic.BaseModel):
@@ -14,7 +14,7 @@ class RecipeModel(pydantic.BaseModel):
     """
 
     inputs: dict[Material, int]
-    outputs: dict[Material, int] | None  # for electricity producer, output is not mandatory
+    outputs: dict[Material, int] = {}  # for electricity producer, output is not mandatory
 
 
 class BuildingModel(pydantic.BaseModel):
@@ -23,7 +23,7 @@ class BuildingModel(pydantic.BaseModel):
 
 
 class ConfModel(pydantic.BaseModel):
-    buildings: dict[Building, BuildingModel]
+    buildings: dict[BuildingType, BuildingModel]
 
 
 BUILDING_SPEC = ConfModel(**yaml.safe_load(DATA_FILE.read_text())).buildings

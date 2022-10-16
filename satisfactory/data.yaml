@@ -1,6 +1,8 @@
 buildings:
   Foreuse MK2:
     energy_cost: 12
+  Foreuse MK1:
+    energy_cost: 5 # TODO check
   Pompe à eau:
     energy_cost: 20
   Générateur à charbon:
@@ -9,6 +11,7 @@ buildings:
       brule charbon:
         inputs:
           charbon: 15
+          eau: 45
   Fonderie avancée:
     energy_cost: 16
     recipes:
@@ -26,6 +29,11 @@ buildings:
           minerai de cuivre: 30
         outputs:
           lingot de cuivre: 30
+      lingot de fer:
+        inputs:
+          minerai de fer: 30
+        outputs:
+          lingot de fer: 30
   Constructeur:
     energy_cost: 4
     recipes:
@@ -49,6 +57,21 @@ buildings:
           lingot de cuivre: 15
         outputs:
           fil electrique: 30
+      plaque:
+        inputs:
+          lingot de fer: 30
+        outputs:
+          plaque: 20
+      tige:
+        inputs:
+          lingot de fer: 15
+        outputs:
+          tige: 15
+      vis:
+        inputs:
+          tige: 10
+        outputs:
+          vis: 40
   Assembleuse:
     energy_cost: 15
     recipes:
@@ -70,3 +93,21 @@ buildings:
           rotor: 10
         outputs:
           moteur: 5
+      plaque de fer renforcée:
+        inputs:
+          plaque: 30
+          vis: 60
+        outputs:
+          plaque de fer renforcée: 5
+      cadre modulaire:
+        inputs:
+          plaque de fer renforcée: 7.5
+          vis: 140
+        outputs:
+          cadre modulaire: 5
+      rotor:
+        inputs:
+          tige: 20
+          vis: 100
+        outputs:
+          rotor: 4
