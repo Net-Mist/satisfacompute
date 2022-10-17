@@ -1,5 +1,5 @@
 import unittest
 
-from tests.bases import TestBase
+from tests.bases import TestBase  # noqa
 
 unittest.main()

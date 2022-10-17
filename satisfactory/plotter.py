@@ -1,19 +1,22 @@
+from math import floor
 from pathlib import Path
 
-from .base import Base, Building
+from satisfactory.dataclasses import Material
+
+from .base import AllConnectedBase, Base, Building, GenericBase
 
 GRAPHVIZ_START = """
 digraph G {
   fontname="Helvetica,Arial,sans-serif"
   node [fontname="Helvetica,Arial,sans-serif"]
   edge [
-		arrowsize=0.5
-		fontname="Helvetica,Arial,sans-serif"
-		labeldistance=3
-		labelfontcolor="#00000080"
-		penwidth=2
-		// style=dotted // dotted style symbolizes data transfer
-	]
+    arrowsize=0.5
+    fontname="Helvetica,Arial,sans-serif"
+    labeldistance=3
+    labelfontcolor="#00000080"
+    penwidth=2
+    // style=dotted // dotted style symbolizes data transfer
+  ]
   // layout=fdp
   concentrate=True;
   rankdir=TB;
@@ -22,8 +25,14 @@ digraph G {
 
 GRAPHVIZ_END = "\n}\n"
 
+def fstr(n: float):
+    if abs(n - floor(n)) < 0.01:
+        return f"{int(n)}"
+    else:
+        return f"{n:0.2f}"
 
-def plotter(base: Base, path: Path):
+
+def plotter(base: Base, path: Path) -> None:
     id = "1"
     base_to_id = {base: id}
     connections = []  # list of flux between bases
@@ -33,16 +42,22 @@ def plotter(base: Base, path: Path):
     for (in_base, out_base, materials) in connections:
         in_id = base_to_id[in_base]
         out_id = base_to_id[out_base]
-        materials = " ".join([f"{v} {k}" for k, v in  materials.items()])
+        materials = " ".join([f"{fstr(v)} {k}" for k, v in materials.items()])
         graphviz += f'  {in_id} -> {out_id} [label="   {materials}"]\n'
     graphviz += GRAPHVIZ_END
     path.write_text(graphviz)
 
 
-def base_to_graphviz(base: Base, id, base_to_id, connections, level) -> str:
+def base_to_graphviz(
+    base: Base,
+    id: str,
+    base_to_id: dict[GenericBase, str],
+    connections: list[tuple[GenericBase, GenericBase, Material]],
+    level: int,
+) -> str:
     indent = " " * 2 * level
     indent_in = " " * 3 * level
-    r = f'\n{indent}subgraph cluster{id} {{\n{indent_in}label = "{base.label}";\n'
+    r = f'\n{indent}subgraph cluster{id} {{\n{indent_in}label = "{base.label} : {base.energy_available:0.2f} MW";\n'
 
     for i, sub_base in enumerate(base.sub_bases):
         if type(sub_base) == Building:
@@ -51,15 +66,18 @@ def base_to_graphviz(base: Base, id, base_to_id, connections, level) -> str:
             base_to_id[sub_base] = b_id
             for import_base, materials in sub_base.imports.items():
                 connections.append((import_base, sub_base, materials))
-        else:
+        elif type(sub_base) in (Base, AllConnectedBase):
             b_id = f"s{id}subbase{i}"
             r += base_to_graphviz(sub_base, b_id, base_to_id, connections, level + 1)
+        else:
+            ValueError("unknown subbase type")
 
     return r + indent + "}\n"
 
-def building_to_graphviz(building: Building, id):
+
+def building_to_graphviz(building: Building, id: str) -> str:
     label_displayed = f": {building.label}" if building.label is not None else ""
-    residual_materials_snippets = [f"{k}: {v:0.2f}" for k, v in building.material_quantities.items() if v]
+    residual_materials_snippets = [f"{k}: {fstr(v)}" for k, v in building.material_quantities.items() if v > 0.01]
     color = "white"
 
     has_lowered_q = False
@@ -67,9 +85,9 @@ def building_to_graphviz(building: Building, id):
 
     params = ""
     if building.clock_speed == 100:
-        params += f"q={building.q:0.2f}"
+        params += f"q={fstr(building.q)}"
         if building.computed_q != building.q:
-            params += f" to {building.computed_q:0.2f}"
+            params += f" to {fstr(building.computed_q)}"
             has_lowered_q = True
 
     residual_materials = ""
@@ -86,6 +104,8 @@ def building_to_graphviz(building: Building, id):
 
     displayed_color = ""
     if color != "white":
-        displayed_color=f"style=filled fillcolor=\"{color}\""
+        displayed_color = f'style=filled fillcolor="{color}"'
 
-    return f'{id} [{displayed_color} label="{building.building_type}{label_displayed}\\n{params}{residual_materials}"]\n'
+    return (
+        f'{id} [{displayed_color} label="{building.building_type}{label_displayed}\\n{params}{residual_materials}"]\n'
+    )

@@ -1,7 +1,7 @@
 import unittest
 from pathlib import Path
 
-from satisfactory import AllConnectedBase, Base, Building
+from satisfactory.base import AllConnectedBase, Base, Building
 from satisfactory.dataclasses import BuildingType, Material, MaterialType, Recipe
 from satisfactory.plotter import plotter
 
@@ -44,7 +44,6 @@ class TestBase(unittest.TestCase):
         self.assertEqual(fonderie.material_quantities[Material.LINGOT_FER], 30 / 2)
         self.assertEqual(base.energy_available, -5 - 4 * 0.5**1.6)
 
-
     def test_all_connected_base(self) -> None:
         base = Base()
         all_connected = AllConnectedBase()
@@ -65,7 +64,6 @@ class TestBase(unittest.TestCase):
         self.assertEqual(foreuse.material_quantities[Material.MINERAI_DE_FER], 120 - 30 / 2)
         self.assertEqual(fonderie.material_quantities[Material.LINGOT_FER], 30 / 2)
         self.assertEqual(base.energy_available, -5 - 4 * 0.5**1.6)
-
 
     def test_all_connected_base2(self) -> None:
         base = Base("plop")
@@ -93,9 +91,7 @@ class TestBase(unittest.TestCase):
         sub_base.add_all_connected(
             "RdC Vis",
             [
-                Building(
-                    BuildingType.FOREUSE_MK2, material=Material.MINERAI_DE_FER, material_type=MaterialType.PUR, q=1
-                ),
+                Building(BuildingType.FOREUSE_MK2, material=Material.MINERAI_DE_FER, material_type=MaterialType.PUR),
                 Building(BuildingType.FONDERIE, recipe=Recipe.LINGOT_FER, q=8),
                 Building(BuildingType.CONSTRUCTEUR, recipe=Recipe.TIGE, q=6),  # RdC
                 Building(BuildingType.CONSTRUCTEUR, recipe=Recipe.VIS, q=6),  # RdC
@@ -117,7 +113,7 @@ class TestBase(unittest.TestCase):
         sub_base.add_all_connected(
             "plaque",
             [
-                Building(BuildingType.FOREUSE_MK1, material=Material.MINERAI_DE_FER, material_type=MaterialType.PUR, q=1),
+                Building(BuildingType.FOREUSE_MK1, material=Material.MINERAI_DE_FER, material_type=MaterialType.PUR),
                 Building(BuildingType.FONDERIE, recipe=Recipe.LINGOT_FER, q=4),
                 Building(BuildingType.CONSTRUCTEUR, recipe=Recipe.PLAQUE, q=4),
                 # need import vis
@@ -129,11 +125,11 @@ class TestBase(unittest.TestCase):
         sub_base.add_all_connected(
             "RdC Vis",
             [
-                Building(BuildingType.FOREUSE_MK2, material=Material.MINERAI_DE_FER, material_type=MaterialType.PUR, q=1),
+                Building(BuildingType.FOREUSE_MK2, material=Material.MINERAI_DE_FER, material_type=MaterialType.PUR),
                 lingot_fer := Building(BuildingType.FONDERIE, recipe=Recipe.LINGOT_FER, q=8),
                 Building(BuildingType.CONSTRUCTEUR, recipe=Recipe.TIGE, q=6),  # RdC
                 Building(BuildingType.CONSTRUCTEUR, recipe=Recipe.VIS, q=6),  # RdC
-                b := Building(BuildingType.ASSEMBLEUSE, recipe=Recipe.ROTOR, q=3, label="rotor"),
+                Building(BuildingType.ASSEMBLEUSE, recipe=Recipe.ROTOR, q=3, label="rotor"),
             ],
         )
 
@@ -147,7 +143,7 @@ class TestBase(unittest.TestCase):
         )
         lingot_fer.export_to(tige_1, [Material.LINGOT_FER])
         vis_1.export_to(fer_renforce, [Material.VIS])
-        
+
         base.add_sub_base(sub_base)
         base.resolve()
         base.rapport()

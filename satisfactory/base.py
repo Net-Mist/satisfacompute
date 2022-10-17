@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections import Counter, defaultdict
 from math import floor
 
@@ -9,41 +11,48 @@ logger = get_logger(__name__)
 
 
 class GenericBase:
-    def __init__(self, label: str = None) -> None:
+    def __init__(self, label: str = "") -> None:
         # defined at graph construction time
         self.label = label
         self.sub_bases: list[GenericBase] = []
-        self.parent_base: GenericBase = None
+        self.parent_base: GenericBase | None = None
         self.imports: dict[GenericBase, dict[Material, float]] = defaultdict(dict)
         self.imported_resources_origin: dict[Material, list[GenericBase]] = defaultdict(list)
 
         # changed at resolution time
         self.computed = False
-        self.building_count = Counter()  # counter of all building in base and sub-bases
+        self.building_count: Counter[Building] = Counter()  # counter of all building in base and sub-bases
         self.energy_available: float = 0
-        self.material_quantities = Counter()  # counter for the number of non-consumed materials
+        self.material_quantities: defaultdict[Material, float] = defaultdict(
+            lambda: 0
+        )  # counter for the number of non-consumed materials
 
-    def export_to(self, other_base, materials: list[Material]) -> None:
+    def export_to(self, other_base: GenericBase, materials: list[Material] | None = None) -> None:
+        if materials is None:
+            if type(self) == Building:
+                materials = self.outputs
+            else:
+                raise ValueError("materials need to be define if not a building")
         materials = [Material(i) for i in materials]
         for material in materials:
             other_base.imports[self][material] = 0
         for material in materials:
             other_base.imported_resources_origin[material].append(self)
 
-    def import_from(self, other_base, materials: list[Material]) -> None:
+    def import_from(self, other_base: GenericBase, materials: list[Material] | None) -> None:
         other_base.export_to(self, materials)
 
-    def _building_count_rec_add(self, building: BuildingType, q) -> None:
+    def _building_count_rec_add(self, building: BuildingType, q: int) -> None:
         self.building_count[building] += q
         if self.parent_base:
             self.parent_base._building_count_rec_add(building, q)
 
-    def _energy_available_rec_update(self, q) -> None:
+    def _energy_available_rec_update(self, q: float) -> None:
         self.energy_available += q
         if self.parent_base:
             self.parent_base._energy_available_rec_update(q)
 
-    def _get_available_resources(self, material: Material):
+    def _get_available_resources(self, material: Material) -> float:
         r = self.material_quantities[material]
         # check all imports
         for base in self.imported_resources_origin[material]:
@@ -69,13 +78,15 @@ class GenericBase:
                 base._update_available_resources(material, av_resources)
                 self.imports[base][material] += av_resources
                 q -= av_resources
+        if q < 0.01:
+            return
         logger.warning("this line shouldn't be executed, please investigate")
 
     def resolve(self) -> None:
         self._pre_compute_hook()
         self._compute()
 
-    def _compute(self):
+    def _compute(self) -> None:
         if self.computed:
             return
         self.computed = True
@@ -89,14 +100,14 @@ class GenericBase:
                 self._pre_sub_base_hook(sub_base, i)
                 sub_base._compute()
 
-    def _pre_compute_hook(self):
+    def _pre_compute_hook(self) -> None:
         for base in self.sub_bases:
             base._pre_compute_hook()
 
-    def _pre_sub_base_hook(self, sub_base, i: int):
+    def _pre_sub_base_hook(self, sub_base: GenericBase, i: int) -> None:
         pass
 
-    def get_material_quantities_rec(self):
+    def get_material_quantities_rec(self) -> Counter:
         material_quantities = self.material_quantities
         for base in self.sub_bases:
             material_quantities += base.get_material_quantities_rec()
@@ -111,11 +122,12 @@ class Building(GenericBase):
         material: Material | str = None,
         material_type: MaterialType | str = None,
         label: str = None,
-        clock_speed: int = 100,
+        clock_speed: float = 100,
         q: float = 1,
     ) -> None:
         """
-        if clock_speed is 100, then assume there is `floor(q)` building at 100% efficiency and 1 at `q-floor(q)` efficiency
+        if clock_speed is 100, then assume there is `floor(q)` building at 100% efficiency and 1 at `q-floor(q)`
+        efficiency
         else, then assume all q buildings have this clock speed (q need to be an integer)
         """
         super().__init__(label)
@@ -127,6 +139,10 @@ class Building(GenericBase):
         # material and material_type are for foreuse only
         self.material = Material(material) if material else None
         self.material_type = MaterialType(material_type) if material_type else None
+
+        # special case for water
+        if building_type == BuildingType.POMPE_EAU:
+            self.material = Material.EAU
 
         # for other buildings
         self.recipe = self.building_spec.recipes[Recipe(recipe)] if recipe else None
@@ -141,10 +157,14 @@ class Building(GenericBase):
         if self.clock_speed != 100:
             # see https://satisfactory.fandom.com/wiki/Clock_speed for formula
             assert self.q == floor(self.q)
-            self._energy_available_rec_update(-self.building_spec.energy_cost * self.q * (self.clock_speed / 100) ** 1.6)
+            self._energy_available_rec_update(
+                -self.building_spec.energy_cost * self.q * (self.clock_speed / 100) ** 1.6
+            )
         else:
             self._energy_available_rec_update(-self.building_spec.energy_cost * floor(self.q))
-            self._energy_available_rec_update(-self.building_spec.energy_cost * (self.q-floor(self.q)) * (self.clock_speed / 100) ** 1.6)
+            self._energy_available_rec_update(
+                -self.building_spec.energy_cost * (self.q - floor(self.q)) * (self.clock_speed / 100) ** 1.6
+            )
 
         q = self.q * self.clock_speed / 100
 
@@ -182,11 +202,11 @@ class Base(GenericBase):
     def create_building(
         self,
         building_type: BuildingType | str,
-        recipe: Recipe | str = None,
-        material: Material | str = None,
-        material_type: MaterialType | str = None,
-        label: str = None,
-        clock_speed: int = 100,
+        recipe: Recipe | str | None = None,
+        material: Material | str | None = None,
+        material_type: MaterialType | str | None = None,
+        label: str | None = None,
+        clock_speed: float = 100,
         q: int = 1,
     ) -> Building:
         building = Building(building_type, recipe, material, material_type, label, clock_speed, q)
@@ -197,11 +217,11 @@ class Base(GenericBase):
         self.sub_bases.append(building)
         building.parent_base = self
 
-    def add_sub_base(self, base: GenericBase):
+    def add_sub_base(self, base: GenericBase) -> None:
         self.sub_bases.append(base)
         base.parent_base = self
 
-    def add_all_connected(self, label: str, building_list: list[Building]):
+    def add_all_connected(self, label: str, building_list: list[Building]) -> None:
         sub_base = AllConnectedBase(label)
         for building in building_list:
             sub_base.add_building(building)
@@ -221,21 +241,21 @@ class Base(GenericBase):
                 s += f"- {k}: {v:0.2f}\n"
         return s
 
-    def get_material_quantities_rec(self):
+    def get_material_quantities_rec(self) -> Counter:
         material_quantities = Counter()
         for base in self.sub_bases:
             material_quantities += base.get_material_quantities_rec()
         return material_quantities
 
-    def _compute(self):
+    def _compute(self) -> None:
         super()._compute()
 
-    def rapport(self):
+    def rapport(self) -> None:
         print(self)
 
 
 class AllConnectedBase(Base):
-    def _pre_compute_hook(self):
+    def _pre_compute_hook(self) -> None:
         super()._pre_compute_hook()
 
         # connect the buildings

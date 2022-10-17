@@ -4,6 +4,9 @@ from enum import Enum
 class Material(str, Enum):
     MINERAI_DE_FER = "minerai de fer"
     MINERAI_DE_CUIVRE = "minerai de cuivre"
+    QUARTZ_BRUT = "quartz brut"
+    CRISTAL_DE_QUARTZ = "cristal de quartz"
+    SILICE = "silice"
     CHARBON = "charbon"
     LINGOT_ACIER = "lingot d'acier"
     LINGOT_CUIVRE = "lingot de cuivre"
@@ -23,6 +26,10 @@ class Material(str, Enum):
     CADRE_MODULAIRE = "cadre modulaire"
     TIGE = "tige"
     VIS = "vis"
+    CADRE_MODULAIRE_LOURD = "cadre modulaire lourd"
+    CIRCUIT_IMPRIME = "circuit imprimé"
+    TOLE_CUIVRE = "tole de cuivre"
+
 
 
 class BuildingType(str, Enum):
@@ -34,6 +41,7 @@ class BuildingType(str, Enum):
     FONDERIE = "Fonderie"
     POMPE_EAU = "Pompe à eau"
     GENERATEUR_CHARBON = "Générateur à charbon"
+    FACONNEUSE = "Faconneuse"
 
 
 class Recipe(str, Enum):
@@ -54,6 +62,14 @@ class Recipe(str, Enum):
     TIGE = "tige"
     ROTOR = "rotor"
     VIS = "vis"
+    CADRE_MODULAIRE_LOURD = "cadre modulaire lourd"
+    CRISTAL_DE_QUARTZ = "cristal de quartz"
+    SILICE = "silice"
+    CIRCUIT_IMPRIME_EN_SILICIUM = "circuit imprimé en silicium"
+    TOLE_CUIVRE = "tole de cuivre"
+
+
+    
 
 
 class MaterialType(int, Enum):

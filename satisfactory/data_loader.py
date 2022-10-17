@@ -13,8 +13,8 @@ class RecipeModel(pydantic.BaseModel):
     inputs and outputs are dictionary mapping the material to the quantity per hour
     """
 
-    inputs: dict[Material, int]
-    outputs: dict[Material, int] = {}  # for electricity producer, output is not mandatory
+    inputs: dict[Material, float]
+    outputs: dict[Material, float] = {}  # for electricity producer, output is not mandatory
 
 
 class BuildingModel(pydantic.BaseModel):

@@ -9,7 +9,8 @@ class Formatter(logging.Formatter):
         values = record.__dict__
         if values["levelname"] == "WARNING":
             values["levelchar"] = "\033[93mWarning\033[0m"
-        return self._fmt % values
+
+        return self._fmt % values  # type: ignore[operator]
 
 
 def get_logger(name: str) -> logging.Logger:

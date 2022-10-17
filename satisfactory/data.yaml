@@ -72,6 +72,21 @@ buildings:
           tige: 10
         outputs:
           vis: 40
+      cristal de quartz:
+        inputs:
+          quartz brut: 37.5
+        outputs:
+          cristal de quartz: 22.5
+      silice:
+        inputs:
+          quartz brut: 22.5
+        outputs:
+          silice: 37.5
+      tole de cuivre:
+        inputs:
+          lingot de cuivre: 20
+        outputs:
+          tole de cuivre: 10
   Assembleuse:
     energy_cost: 15
     recipes:
@@ -111,3 +126,20 @@ buildings:
           vis: 100
         outputs:
           rotor: 4
+      circuit imprimé en silicium:
+          inputs:
+            tole de cuivre: 27.5
+            silice: 11
+          outputs:
+            circuit imprimé: 12.5
+  Faconneuse:
+    energy_cost: 55
+    recipes:
+      cadre modulaire lourd:
+        inputs:
+          cadre modulaire: 10
+          tuyau en acier: 30
+          poutre en beton armé: 10
+          vis: 200
+        outputs:
+          cadre modulaire lourd: 2
