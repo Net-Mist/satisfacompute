@@ -4,13 +4,17 @@ from enum import Enum
 class Material(str, Enum):
     MINERAI_DE_FER = "minerai de fer"
     MINERAI_DE_CUIVRE = "minerai de cuivre"
+    MINERAI_DE_CATERIUM = "minerai de caterium"
     QUARTZ_BRUT = "quartz brut"
     CRISTAL_DE_QUARTZ = "cristal de quartz"
+    FILACTIF = "filactif"
+    CONTROLEUR_IA = "controleur d'IA"
     SILICE = "silice"
     CHARBON = "charbon"
     LINGOT_ACIER = "lingot d'acier"
     LINGOT_CUIVRE = "lingot de cuivre"
     LINGOT_FER = "lingot de fer"
+    LINGOT_CATERIUM = "lingot de caterium"
     POUTRE_ACIER = "poutre en acier"
     TUYAU_ACIER = "tuyau en acier"
     CALCAIRE = "calcaire"
@@ -29,25 +33,43 @@ class Material(str, Enum):
     CADRE_MODULAIRE_LOURD = "cadre modulaire lourd"
     CIRCUIT_IMPRIME = "circuit imprimé"
     TOLE_CUIVRE = "tole de cuivre"
-
+    PETROLE_BRUT = "petrole brut"
+    CAOUTCHOUC = "caoutchouc"
+    RESIDUS_DE_PETROLE_LOURD = "residus de petrole lourd"
+    PLASTIQUE = "plastique"
+    COKE_DE_PETROLE = "coke de petrole"
+    ORDINATEUR = "ordinateur"
+    CABLE = "cable"
+    CARBURANT = "carburant"
+    BIDON_VIDE = "bidon vide"
+    CARBURANT_CONDITIONNE = "carburant conditionné"
+    CONNECTEUR_HAUTE_VITESSE = "connecteur haute vitesse"
 
 
 class BuildingType(str, Enum):
-    FOREUSE_MK2 = "Foreuse MK2"
     FOREUSE_MK1 = "Foreuse MK1"
+    FOREUSE_MK2 = "Foreuse MK2"
+    POMPE_EAU = "Pompe à eau"
+    POMPE_A_PETROLE = "Pompe à petrole"
     FONDERIE_AVANCEE = "Fonderie avancée"
     CONSTRUCTEUR = "Constructeur"
     ASSEMBLEUSE = "Assembleuse"
     FONDERIE = "Fonderie"
-    POMPE_EAU = "Pompe à eau"
     GENERATEUR_CHARBON = "Générateur à charbon"
     FACONNEUSE = "Faconneuse"
+    RAFFINERIE = "Raffinerie"
+    PACKAGEUR = "Packageur"
+    GENERATEUR_CARBURANT = "Générateur à carburant"
 
 
 class Recipe(str, Enum):
     LINGOT_ACIER = "lingot d'acier"
     POUTRE_ACIER = "poutre en acier"
     TUYAU_ACIER = "tuyau en acier"
+    LINGOT_CATERIUM = "lingot de caterium"
+    CONTROLEUR_IA = "controleur d'IA"
+    CONNECTEUR_HAUTE_VITESSE = "connecteur haute vitesse"
+    FILACTIF = "filactif"
     BETON = "beton"
     POUTRE_BETON_ARME = "poutre en beton armé"
     LINGOT_CUIVRE = "lingot de cuivre"
@@ -67,9 +89,16 @@ class Recipe(str, Enum):
     SILICE = "silice"
     CIRCUIT_IMPRIME_EN_SILICIUM = "circuit imprimé en silicium"
     TOLE_CUIVRE = "tole de cuivre"
-
-
-    
+    CAOUTCHOUC = "caoutchouc"
+    PLASTIQUE = "plastique"
+    COKE_DE_PETROLE = "coke de petrole"
+    BRULE_COKE_PETROLE = "brule coke petrole"
+    ORDINATEUR = "ordinateur"
+    CABLE = "cable"
+    CARBURANT_RESIDUEL = "carburant résiduel"
+    BIDON_VIDE = "bidon vide"
+    CARBURANT_CONDITIONNE = "carburant conditionné"
+    BRULE_CARBURANT = "brule carburant"
 
 
 class MaterialType(int, Enum):

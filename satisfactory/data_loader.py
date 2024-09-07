@@ -3,7 +3,7 @@ from pathlib import Path
 import pydantic
 import yaml
 
-from .dataclasses import BuildingType, Material, Recipe
+from satisfactory.dataclasses import BuildingType, Material, Recipe
 
 DATA_FILE = Path(__file__).parent / "data.yaml"
 

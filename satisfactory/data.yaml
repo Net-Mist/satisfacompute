@@ -1,10 +1,12 @@
 buildings:
-  Foreuse MK2:
-    energy_cost: 12
   Foreuse MK1:
     energy_cost: 5 # TODO check
+  Foreuse MK2:
+    energy_cost: 12
   Pompe à eau:
     energy_cost: 20
+  Pompe à petrole:
+    energy_cost: 40
   Générateur à charbon:
     energy_cost: -75
     recipes:
@@ -12,6 +14,16 @@ buildings:
         inputs:
           charbon: 15
           eau: 45
+      brule coke petrole:
+        inputs:
+          coke de petrole: 25
+          eau: 45
+  Générateur à carburant:
+    energy_cost: -150
+    recipes:
+      brule carburant:
+        inputs:
+          carburant: 12
   Fonderie avancée:
     energy_cost: 16
     recipes:
@@ -34,6 +46,11 @@ buildings:
           minerai de fer: 30
         outputs:
           lingot de fer: 30
+      lingot de caterium:
+        inputs:
+          minerai de caterium: 45
+        outputs:
+          lingot de caterium: 15
   Constructeur:
     energy_cost: 4
     recipes:
@@ -57,6 +74,11 @@ buildings:
           lingot de cuivre: 15
         outputs:
           fil electrique: 30
+      cable:
+        inputs:
+          fil electrique: 60
+        outputs:
+          cable: 30
       plaque:
         inputs:
           lingot de fer: 30
@@ -87,6 +109,16 @@ buildings:
           lingot de cuivre: 20
         outputs:
           tole de cuivre: 10
+      bidon vide:
+        inputs:
+          plastique: 30
+        outputs:
+          bidon vide: 60
+      filactif:
+        inputs:
+          lingot de caterium: 12
+        outputs:
+          filactif: 60
   Assembleuse:
     energy_cost: 15
     recipes:
@@ -127,11 +159,17 @@ buildings:
         outputs:
           rotor: 4
       circuit imprimé en silicium:
-          inputs:
-            tole de cuivre: 27.5
-            silice: 11
-          outputs:
-            circuit imprimé: 12.5
+        inputs:
+          tole de cuivre: 27.5
+          silice: 11
+        outputs:
+          circuit imprimé: 12.5
+      controleur d'IA:
+        inputs:
+          tole de cuivre: 25
+          filactif: 100
+        outputs:
+          controleur d'IA: 5
   Faconneuse:
     energy_cost: 55
     recipes:
@@ -143,3 +181,52 @@ buildings:
           vis: 200
         outputs:
           cadre modulaire lourd: 2
+      ordinateur:
+        inputs:
+          circuit imprimé: 25
+          cable: 22.5
+          plastique: 45
+          vis: 130
+        outputs:
+          ordinateur: 2.5
+      connecteur haute vitesse:
+        inputs:
+          filactif: 210
+          cable: 37.5
+          circuit imprimé: 3.75
+        outputs:
+          connecteur haute vitesse: 3.75
+  Raffinerie:
+    energy_cost: 30
+    recipes:
+      caoutchouc:
+        inputs:
+          petrole brut: 30
+        outputs:
+          caoutchouc: 20
+          residus de petrole lourd: 20
+      plastique:
+        inputs:
+          petrole brut: 30
+        outputs:
+          plastique: 20
+          residus de petrole lourd: 10
+      coke de petrole:
+        inputs:
+          residus de petrole lourd: 40
+        outputs:
+          coke de petrole: 120
+      carburant résiduel:
+        inputs:
+          residus de petrole lourd: 60
+        outputs:
+          carburant: 40
+  Packageur:
+    energy_cost: 10
+    recipes:
+      carburant conditionné:
+        inputs:
+          bidon vide: 40
+          carburant: 40
+        outputs:
+          carburant conditionné: 40
